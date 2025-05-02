@@ -1,5 +1,6 @@
+require('dotenv').config()
 const mongoose = require("mongoose");
-
+const bcrypt =  require('bcrypt');
 const user = new mongoose.Schema(
     {
         firstName: {
@@ -32,15 +33,36 @@ const user = new mongoose.Schema(
             type: String
         },
         verifyToken: {
-            required: true,
+            required: [true, "verify token not genrated"],
             type: String
         },
         isVerify: {
-            required: true,
             type: Boolean,
             default: false
         }
-    }
+    },
+    { timestamps: true }
 );
+
+
+user.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    try {
+        const salt_value = Number(process.env.SALT)
+      const salt = await bcrypt.genSalt();
+      this.password = await bcrypt.hash(this.password, salt);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+
+
+const User = mongoose.model("userDetail", user);
+
+module.exports = User
+
+
 
 
