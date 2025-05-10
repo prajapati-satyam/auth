@@ -82,7 +82,7 @@ const verifyUser = async (req, res) => {
         if (decoded) {
             await User.findOneAndUpdate(
                 {mail: decoded.mail},
-                {isVerify: true}
+                {isVerify: true, verifyToken: null}
             )
             res.status(200).json({
                 message: "user verified",
