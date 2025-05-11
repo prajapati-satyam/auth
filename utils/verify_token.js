@@ -26,4 +26,13 @@ function verifyToken(token) {
 
 }
 
-module.exports = {generateVerifyToken, verifyToken}
+function generateLoginToken(userid) {
+    const token = jwt.sign(
+        { userId: userid },
+        SECRET,
+        { expiresIn: '1d' });
+       return token
+
+}
+
+module.exports = { generateVerifyToken, verifyToken, generateLoginToken }

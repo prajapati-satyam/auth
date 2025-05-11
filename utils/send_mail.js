@@ -22,8 +22,10 @@ let emailText = verifyaccountMailgen.generatePlaintext(verifyaccoutbodyGenrator(
       text: emailText,
       html: emailBody,
     });
+    return true;
     } catch(err) {
         console.log("unable to send mail ", err);
+        return false;
     }
 }
 

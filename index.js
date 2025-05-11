@@ -4,9 +4,11 @@ const connectDB = require('./utils/db.connect');
 const router = require('./routes/user.route');
 const app = express()
 const port = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
 
 connectDB();
 
+app.use(cookieParser());
 app.use(express.json());
 
 app.get('/', (req, res) => {
