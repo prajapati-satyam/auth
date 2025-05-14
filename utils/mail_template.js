@@ -35,7 +35,7 @@ const resetPasswordBodyGenrator = (username, token) => {
 name: username,
 intro: 'Reset password request',
 action:{
-    instructions: 'To reset your account, please click here',
+    instructions: 'To reset your account password, please click here',
     button: {
         color: '#ff5050',
         text: 'Reset password',
@@ -47,4 +47,24 @@ outro: `If request is not placed by you, \n you can ignore it, \ no need to worr
     }
 }
 
-module.exports = {verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator}
+const forgotPasswordBodyGenrator = (username, token) => {
+    const verifyLink = `https://yourdomain.com?token=${token}`
+    return {
+        body : {
+name: username,
+intro: 'Forgot password request',
+action:{
+    instructions: 'To Forgot your account password, please click here',
+    button: {
+        color: '#ff5050',
+        text: 'Forgot password',
+        link: verifyLink
+    }
+},
+outro: `If request is not placed by you, \n you can ignore it, \ no need to worry`
+        }
+    }
+}
+
+
+module.exports = {verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator}

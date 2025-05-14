@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
-const { verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator } = require("./mail_template");
+const { verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator } = require("./mail_template");
+
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOSTNAME_TEST,
@@ -36,8 +37,8 @@ async function sendResetPasswordMail(tomail, username, token) {
   if (!tomail || !username || !token) {
     return new Error("All parmeter are required : tomail, username, token");
   }
-  let emailBody = verifyaccountMailgen.generate(resetPasswordBodyGenrator(username,token));
-  let emailText = verifyaccountMailgen.generatePlaintext(resetPasswordBodyGenrator(username,token));
+  let emailBody = verifyaccountMailgen.generate(resetPasswordBodyGenrator(username, token));
+  let emailText = verifyaccountMailgen.generatePlaintext(resetPasswordBodyGenrator(username, token));
 
   try {
     const info = await transporter.sendMail({
@@ -54,4 +55,25 @@ async function sendResetPasswordMail(tomail, username, token) {
   }
 }
 
-module.exports = {sendverifymail, sendResetPasswordMail}
+async function sendForgotPasswordMail(tomail, username, token) {
+  if (!tomail || !username || !token) {
+    return new Error("All parmeter are required : tomail, username, token");
+  }
+  let emailBody = verifyaccountMailgen.generate(forgotPasswordBodyGenrator(username, token));
+  let emailText = verifyaccountMailgen.generatePlaintext(forgotPasswordBodyGenrator(username, token));
+  try {
+    const info = await transporter.sendMail({
+      from: '" 👻" <hi@demomailtrap.co>',
+      to: tomail,
+      subject: "Forgot Password",
+      text: emailText,
+      html: emailBody,
+    });
+    return true;
+  } catch (err) {
+    console.log("unable to send forgot password mail : ", err);
+    return false
+  }
+}
+
+module.exports = { sendverifymail, sendResetPasswordMail, sendForgotPasswordMail }

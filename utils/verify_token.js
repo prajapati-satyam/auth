@@ -43,4 +43,11 @@ function generateResetPasswordToken(userid) {
         return token
 }
 
-module.exports = { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken}
+function generateForgotPasswordToken(userid) {
+    const token = jwt.sign(
+        { userId: userid },
+         SECRET,
+        { expiresIn: '5m' });
+        return token
+}
+module.exports = { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken, generateForgotPasswordToken}

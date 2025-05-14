@@ -1,6 +1,6 @@
 const User = require("../model/user.model");
-const {sendverifymail, sendResetPasswordMail} = require("../utils/send_mail");
-const { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken } = require("../utils/verify_token");
+const {sendverifymail, sendResetPasswordMail, sendForgotPasswordMail} = require("../utils/send_mail");
+const { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken, generateForgotPasswordToken } = require("../utils/verify_token");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -259,6 +259,19 @@ res.status(200).json({
 }
 
 const verifyResetPasswordAndUpdate = async (req,res) => {
+    const token = req.query.token;
+    if(!token) {
+        return res.status(400).json({
+            message: "invalid link",
+            success: false
+        })
+    }
+    if(!req.body) {
+return res.status(400).json({
+    message: "body must be required",
+    success: false
+})
+    }
     const {oldpassword, password, cnpassword} = req.body;
     if (!oldpassword || !password || !cnpassword) {
         return res.status(400).json({
@@ -272,7 +285,6 @@ const verifyResetPasswordAndUpdate = async (req,res) => {
         success: false
        })
     }
-    const token = req.query.token;
     console.log(token)
     try {
         const isValid = jwt.verify(token, process.env.JWT_SECRET);
@@ -302,4 +314,92 @@ const verifyResetPasswordAndUpdate = async (req,res) => {
     }
 
 }
-module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate}
+
+const forgotPasswordRequest = async (req,res) => {
+
+    const {mail} = req.body;
+    if (!mail) {
+return res.status(400).json({
+    message: "mail is required",
+    success: false
+})
+    }
+    try {
+const finduser = await User.findOne({mail});
+if (!finduser) {
+    return re.status(400).json({
+        message: "no user found , check your mail and try again with correct mail",
+        success: false
+    })
+}
+const token = generateForgotPasswordToken(finduser._id);
+finduser.forgotPasswordToken = token;
+await finduser.save();
+const isMailSend = await sendForgotPasswordMail(mail,finduser.username,token);
+if (!isMailSend) {
+    return res.status(400).json({
+        message: "failed to sent mail on register mail address",
+        success: false
+    })
+}
+res.status(200).json({
+    message: "mail sent",
+    success: true
+})
+
+    } catch (err) {
+        console.log("error in forgot password requets : ", err);
+        res.status(400).json({
+            message: "uanble to send mail , try again",
+            success: false
+        })
+    }
+
+}
+
+const verifyForgotPasswordAndUpdate = async (req,res) => {
+    const token = req.query.token;
+    if (!token) {
+        return res.status(400).json({
+        message: "invalid link",
+        success: false
+        })
+            }
+            if(!req.body) {
+                return res.status(400).json({
+                    message: "body must be required", success: false
+                })
+            }
+    const {password, cnpassword} = req.body;
+    if (!password || !cnpassword) {
+return res.status(400).json({
+    message: "all fields are required",
+    success: false
+})
+}
+if (password !== cnpassword) {
+    return res.status(400).json({
+        message: "password and confirm password mismatch",
+        success: false
+    })
+    }
+    try {
+        const isValid = jwt.verify(token, process.env.JWT_SECRET);
+        const finduser = await User.findOne(({forgotPasswordToken: token}));
+        finduser.password = password;
+        finduser.forgotPasswordToken = null;
+        await finduser.save();
+        res.status(200).json({
+            message: "Password updated successfully",
+            success: true
+        })
+    } catch(err) {
+        console.log("failed to verify token : ", err);
+        res.status(400).json({
+            message: "link expired, try with new one",
+            success: false
+        })
+    }
+}
+
+module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate}
