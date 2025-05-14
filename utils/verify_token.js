@@ -31,8 +31,16 @@ function generateLoginToken(userid) {
         { userId: userid },
         SECRET,
         { expiresIn: '1d' });
-       return token
+    return token
 
 }
 
-module.exports = { generateVerifyToken, verifyToken, generateLoginToken }
+function generateResetPasswordToken(userid) {
+    const token = jwt.sign(
+        { userId: userid },
+         SECRET,
+        { expiresIn: '5m' });
+        return token
+}
+
+module.exports = { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken}
