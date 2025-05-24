@@ -10,6 +10,7 @@ connectDB();
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -23,5 +24,5 @@ try {
     })
 } catch (err) {
 
-    throw new Error("Unable to start express")
+    throw new Error("Unable to start server")
 }

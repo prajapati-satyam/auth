@@ -1,8 +1,11 @@
 const User = require("../model/user.model");
 const {sendverifymail, sendResetPasswordMail, sendForgotPasswordMail} = require("../utils/send_mail");
 const { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken, generateForgotPasswordToken } = require("../utils/verify_token");
+const upload = require('../middleware/file.upload.multer.middleware');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const imagekit = require("../utils/imgkit");
+const fs = require('fs');
 
 const registerUser = async (req, res) => {
     if (!req.body) {
@@ -402,4 +405,65 @@ if (password !== cnpassword) {
     }
 }
 
-module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate}
+const profile_upload = async (req,res) => {
+    if (!req.file) {
+        return res.status(400).json({
+            message: "file required",
+            success: false
+        })
+    }
+        try {
+            if (!req.cookies.token) {
+                return res.status(400).json({
+                    message: "login required for upload image",
+                    success: false
+                })
+            }
+            try {
+            const isVerify = verifyToken(req.cookies.token);
+            const userId = isVerify.userId;
+            const findUser = await User.findOne({_id: userId});
+            if(!findUser) {
+                return res.status(400).json({
+                    message: "no user found",
+                    success: false
+                })
+            }
+            try {
+             const filePath = req.file.path;
+     const result = await imagekit.upload({
+        file: fs.createReadStream(filePath),
+        fileName: req.file.originalname,
+        folder: "/profile_picture",
+     })
+     findUser.profilePictureUrl = result.url;
+     findUser.save();
+     console.log(result);
+     console.log(findUser)
+     res.status(200).json({
+        message: "file upload done",
+        success: true,
+        url: result.url
+     })
+    } catch (err) {
+        return res.status(400).json({
+            message: "unable to upload image",
+            success:false
+        })
+     }
+        } catch (err) {
+             return res.status(400).json({
+                message: "login expired , login again to upload image",
+                success: false
+             })
+        }
+    } catch(err) {
+        console.log("failed to upload file : ",err);
+         return res.status(400).json({
+            messsage: "file upload failed",
+            success: false
+        })
+    }
+}
+
+module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload}

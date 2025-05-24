@@ -45,7 +45,11 @@ const user = new mongoose.Schema(
         isVerify: {
             type: Boolean,
             default: false
-        }
+        },
+       profilePictureUrl: {
+        type: String,
+        default: "https://ik.imagekit.io/wskbkewsr/profile_picture/defualt%20profile%20pic.png?updatedAt=1748085952796"
+       }
     },
     { timestamps: true }
 );
