@@ -436,6 +436,7 @@ const profile_upload = async (req,res) => {
         fileName: req.file.originalname,
         folder: "/profile_picture",
      })
+     fs.unlinkSync(req.file.path);
      findUser.profilePictureUrl = result.url;
      findUser.save();
      console.log(result);
