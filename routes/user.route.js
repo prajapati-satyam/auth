@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, verifyUser, loginUser, resendMail, profile, resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload } = require('../controller/user.controller');
+const { registerUser, verifyUser, loginUser, resendMail, profile, resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload, delete_profile_picture, logout } = require('../controller/user.controller');
 const { verifyLoginToken } = require('../middleware/user.middleware');
 const check_file = require('../utils/custom_file_error');
 const router = express.Router();
@@ -16,5 +16,7 @@ router.patch('/forgot-password/update', verifyForgotPasswordAndUpdate)
 router.post('/upload', verifyLoginToken, (req,res)=> {
     check_file(req,res);
 });
+router.delete('/delete_profile_picture', delete_profile_picture);
+router.get('/logout', logout)
 
 module.exports = router

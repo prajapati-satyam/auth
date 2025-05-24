@@ -140,7 +140,7 @@ const loginUser = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -467,4 +467,53 @@ const profile_upload = async (req,res) => {
     }
 }
 
-module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload}
+const delete_profile_picture = async (req,res) => {
+    if(!req.cookies.token) {
+ return res.status(400).json({
+    message: "login required",
+    success: false
+ })
+    }
+    try {
+        const isVerify = verifyToken(req.cookies.token);
+        const userId = isVerify.userId;
+        const findUser = await User.findOne({_id: userId});
+        if (!findUser) {
+            return res.status(400).json({
+                message: "no user founnd",
+                success: false
+            })
+        }
+        findUser.profilePictureUrl = "https://ik.imagekit.io/wskbkewsr/profile_picture/defualt%20profile%20pic.png?updatedAt=1748085952796";
+        await findUser.save();
+        return res.status(200).json({
+            message: "profile picture removed",
+            success: true
+        });
+      } catch (err) {
+        console.log("Unable to verify token",err);
+        return res.status(400).json({
+            message: "login required",
+            success: false
+        })
+      }
+}
+
+const logout = async (req,res) => {
+    if (!req.cookies.token) {
+        return res.status(400).json({
+            message: "you already log out",
+            success: false
+        })
+    }
+    res.clearCookie("token", {
+  httpOnly: true,
+  sameSite: "Strict",
+});
+res.status(200).json({
+    message: "logged out",
+    success: true
+})
+}
+
+module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload, delete_profile_picture, logout}
