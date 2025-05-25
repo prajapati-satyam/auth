@@ -135,6 +135,12 @@ const loginUser = async (req, res) => {
                     success: false
                 })
         }
+        if(user.isAccountBlocked) {
+            return res.status(400).json({
+                message: "your account is blocked , contact admin for more info",
+                success: false
+            })
+        }
         const token = generateLoginToken(user._id);
 
         res.cookie('token', token, {
@@ -212,6 +218,12 @@ const profile = async (req, res) => {
                 success: false
             })
         }
+        if (finduser.isAccountBlocked) {
+            return res.status(400).json({
+                    message: "your account blocked , can't perform any action",
+                    success: false
+                })
+        }
         const { firstName, lastName, username, phNum, mail, isVerify } = finduser;
         res.status(200).json({
             message: "data found",
@@ -240,6 +252,12 @@ if (!finduser) {
         message: "no data found",
         success: false
     })
+}
+if(finduser.isAccountBlocked) {
+return res.status(400).json({
+    message: "your account blocked , so you can't reset you password",
+    success: false
+})
 }
  const token = generateResetPasswordToken(userId);
 finduser.resetPasswordToken = token;
@@ -335,6 +353,12 @@ if (!finduser) {
         success: false
     })
 }
+if (finduser.isAccountBlocked) {
+return res.status(400).json({
+    message: "your account bloced, you can't change your password",
+    success: false
+})
+}
 const token = generateForgotPasswordToken(finduser._id);
 finduser.forgotPasswordToken = token;
 await finduser.save();
@@ -429,6 +453,12 @@ const profile_upload = async (req,res) => {
                     success: false
                 })
             }
+            if(findUser.isAccountBlocked) {
+                return res.status(400).json({
+                    message: "your account blocked , can't perform any action",
+                    success: false
+                })
+            }
             try {
              const filePath = req.file.path;
      const result = await imagekit.upload({
@@ -483,6 +513,12 @@ const delete_profile_picture = async (req,res) => {
                 message: "no user founnd",
                 success: false
             })
+        }
+        if (findUser.isAccountBlocked) {
+                 return res.status(400).json({
+                    message: "your account blocked , can't perform any action",
+                    success: false
+                })
         }
         findUser.profilePictureUrl = "https://ik.imagekit.io/wskbkewsr/profile_picture/defualt%20profile%20pic.png?updatedAt=1748085952796";
         await findUser.save();

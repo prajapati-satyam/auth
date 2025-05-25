@@ -49,6 +49,10 @@ const user = new mongoose.Schema(
        profilePictureUrl: {
         type: String,
         default: "https://ik.imagekit.io/wskbkewsr/profile_picture/defualt%20profile%20pic.png?updatedAt=1748085952796"
+       },
+       isAccountBlocked: {
+        type: Boolean,
+        default: false
        }
     },
     { timestamps: true }
