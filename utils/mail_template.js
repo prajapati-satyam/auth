@@ -10,7 +10,7 @@ const verifyaccountMailgen = new Mailgen({
 
 
 const verifyaccoutbodyGenrator = (username, token) => {
-    const verifyLink = `https://yourdomain.com/verify/${token}`; // Replace with your actual domain
+    const verifyLink = `https://auth-cpgr.onrender.com/verify/${token}`; // Replace with your actual domain
     return {
         body: {
             name: username,
@@ -29,7 +29,7 @@ const verifyaccoutbodyGenrator = (username, token) => {
 }
 
 const resetPasswordBodyGenrator = (username, token) => {
-    const verifyLink = `https://yourdomain.com?token=${token}`
+    const verifyLink = `https://auth-cpgr.onrender.com/reset-password/update?token=${token}`
     return {
         body : {
 name: username,
@@ -48,7 +48,7 @@ outro: `If request is not placed by you, \n you can ignore it, \ no need to worr
 }
 
 const forgotPasswordBodyGenrator = (username, token) => {
-    const verifyLink = `https://yourdomain.com?token=${token}`
+    const verifyLink = `https://auth-cpgr.onrender.com/forgot-password/update?token=${token}`
     return {
         body : {
 name: username,
