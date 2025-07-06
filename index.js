@@ -10,7 +10,7 @@ const cors = require('cors');
 connectDB();
 
 app.use(cors({
-  origin: ['http://localhost:5173','http://localhost:5174', 'https://auth-frontend-cyan-two.vercel.app'],
+  origin: ['http://localhost:5173','http://localhost:5174', 'https://auth-frontend-cyan-two.vercel.app', 'https://authfro.netlify.app', 'https://auth-frontend-mj0p.onrender.com'],
   credentials: true                 // allow sending cookies
 }));
 app.use(express.json());
