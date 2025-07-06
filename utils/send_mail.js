@@ -3,12 +3,12 @@ const { verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrato
 
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOSTNAME,
+  host: process.env.SMTP_HOSTNAME_TEST2,
   port: 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USERNAME,
-    pass: process.env.SMTP_PASSWORD,
+    user: process.env.SMTP_USERNAME_TEST2,
+    pass: process.env.SMTP_PASSWORD_TEST2,
   },
 });
 
@@ -20,7 +20,7 @@ async function sendverifymail(tomail, username, token) {
   let emailText = verifyaccountMailgen.generatePlaintext(verifyaccoutbodyGenrator(username, token));
   try {
     const info = await transporter.sendMail({
-      from: '<hi@demomailtrap.co>',
+      from: '<otpverify1979@gmail.com>',
       to: tomail,
       subject: "Verify Account",
       text: emailText,
