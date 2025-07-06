@@ -42,7 +42,7 @@ async function sendResetPasswordMail(tomail, username, token) {
 
   try {
     const info = await transporter.sendMail({
-      from: '" 👻" <hi@demomailtrap.co>',
+      from: '<otpverify1979@gmail.com>',
       to: tomail,
       subject: "Reset Password",
       text: emailText,
@@ -63,7 +63,7 @@ async function sendForgotPasswordMail(tomail, username, token) {
   let emailText = verifyaccountMailgen.generatePlaintext(forgotPasswordBodyGenrator(username, token));
   try {
     const info = await transporter.sendMail({
-      from: '" 👻" <hi@demomailtrap.co>',
+      from: '<otpverify1979@gmail.com>',
       to: tomail,
       subject: "Forgot Password",
       text: emailText,
