@@ -16,11 +16,13 @@ const registerUser = async (req, res) => {
         });
     }
     const { firstName, lastName, username, phNum, mail, password } = req.body;
+    console.log(firstName, lastName, username, phNum, mail, password);
+    
     if (
         firstName === undefined || firstName === null ||
         lastName === undefined || lastName === null ||
         username === undefined || username === null ||
-        phNum === undefined || phNum === null || phNum.length !== 10 ||
+        phNum === undefined || phNum === null ||
         mail === undefined || mail === null ||
         password === undefined || password === null
     ) {
