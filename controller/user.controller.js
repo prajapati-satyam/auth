@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const imagekit = require("../utils/imgkit");
 const fs = require('fs');
+const path = require('path');
 
 const registerUser = async (req, res) => {
     if (!req.body) {
@@ -53,7 +54,7 @@ const registerUser = async (req, res) => {
                 sendverifymail(mail, firstName, verifyToken);
                 console.log("user created : ", userCreated);
                 return res.status(201).json({
-                    message: "User created",
+                    message: "User created,  verification link send to mail addres",
                     success: true
                 })
             } else {
@@ -89,15 +90,9 @@ const verifyUser = async (req, res) => {
                     { mail: decoded.mail },
                     { isVerify: true, verifyToken: "user verified" }
                 )
-                res.status(200).json({
-                    message: "user verified",
-                    success: true
-                })
+                res.status(200).redirect('/verify2.html')
             } else {
-                res.status(400).json({
-                    message: "failed to verify, either token expired or invalid token",
-                    success: false
-                })
+                res.status(400).redirect('/unverify2.html')
             }
         }
     } catch (err) {
@@ -131,7 +126,7 @@ const loginUser = async (req, res) => {
         if (!user.isVerify) {
             return res.status(400).json(
                 {
-                    message: "Unveried profile, verify your profile first",
+                    message: "Unverifed profile, verify your profile first",
                     success: false
                 })
         }
@@ -144,9 +139,6 @@ const loginUser = async (req, res) => {
         const token = generateLoginToken(user._id);
 
         res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -224,7 +216,8 @@ const profile = async (req, res) => {
                     success: false
                 })
         }
-        const { firstName, lastName, username, phNum, mail, isVerify } = finduser;
+        const { firstName, lastName, username, phNum, mail, isVerify,
+profilePictureUrl } = finduser;
         res.status(200).json({
             message: "data found",
             success: true,
@@ -234,7 +227,8 @@ const profile = async (req, res) => {
                 username,
                 phNum,
                 mail,
-                isVerify
+                isVerify,
+profilePictureUrl
             }
         })
     } catch (err) {
@@ -281,6 +275,7 @@ res.status(200).json({
 
 const verifyResetPasswordAndUpdate = async (req,res) => {
     const token = req.query.token;
+    console.log(token);
     if(!token) {
         return res.status(400).json({
             message: "invalid link",
@@ -322,7 +317,7 @@ return res.status(400).json({
         finduser.password = cnpassword;
         finduser.resetPasswordToken = null;
         finduser.save();
-        res.status(400).json({
+        res.status(200).json({
             message: "password updated done",
             success: true
         })
@@ -348,7 +343,7 @@ return res.status(400).json({
     try {
 const finduser = await User.findOne({mail});
 if (!finduser) {
-    return re.status(400).json({
+    return res.status(400).json({
         message: "no user found , check your mail and try again with correct mail",
         success: false
     })
@@ -524,7 +519,7 @@ const delete_profile_picture = async (req,res) => {
         await findUser.save();
         return res.status(200).json({
             message: "profile picture removed",
-            success: true
+            success: true,
         });
       } catch (err) {
         console.log("Unable to verify token",err);
@@ -552,4 +547,11 @@ res.status(200).json({
 })
 }
 
-module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload, delete_profile_picture, logout}
+const send_reset_password_template = (req,res) => {
+    res.sendFile(path.join( __dirname, "..", "public", 'resetpassword2.html'));
+}
+
+const send_forgot_password_template = (req,res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'forgotpassword2.html'));
+}
+module.exports = { registerUser, verifyUser, loginUser, resendMail, profile , resetPasswordRequest, verifyResetPasswordAndUpdate, forgotPasswordRequest, verifyForgotPasswordAndUpdate, profile_upload, delete_profile_picture, logout, send_reset_password_template, send_forgot_password_template}

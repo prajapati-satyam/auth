@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Failed - AuthApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes errorPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+        
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+        
+        .error-pulse {
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-orange-50 min-h-screen">
+    <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 text-center">
+            <!-- Error Icon -->
+            <div class="shake-animation">
+                <div class="inline-flex items-center justify-center w-32 h-32 bg-red-100 rounded-full">
+                    <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="fade-in">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                    Verification Failed
+                </h1>
+                <p class="text-xl text-gray-600 mb-8">
+                    We couldn't verify your email address. The link may have expired or is invalid.
+                </p>
+                
+                <!-- Animated Error Badge -->
+                <div class="error-pulse inline-flex items-center px-4 py-2 bg-red-100 text-red-800 rounded-full text-sm font-medium mb-8">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    Verification Failed
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="space-y-4">
+                    <button
+                        onclick="goToHomePage()"
+                        class="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                    >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Go to Home Page
+                    </button>
+                    
+                    <button
+                        onclick="window.close()"
+                        class="w-full flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transform hover:scale-105 transition-all duration-200"
+                    >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Close Page
+                    </button>
+                </div>
+                
+                <!-- Help Info -->
+                <div class="mt-8 p-4 bg-yellow-50 rounded-lg">
+                    <h3 class="text-sm font-medium text-yellow-800 mb-2">What can you do?</h3>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Try registering again with a valid email address</li>
+                        <li>• Check if you already have an account and try logging in</li>
+                        <li>• Contact support if you continue to have issues</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function goToHomePage() {
+            // Redirect to the React app home page
+            window.location.href = 'http://localhost:5173/';
+        }
+        
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add a small delay before showing the content
+            setTimeout(function() {
+                document.querySelector('.fade-in').style.animationDelay = '0.3s';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
