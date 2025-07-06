@@ -139,6 +139,8 @@ const loginUser = async (req, res) => {
         const token = generateLoginToken(user._id);
 
         res.cookie('token', token, {
+            secure: true,
+  sameSite: "None",
             maxAge: 24 * 60 * 60 * 1000
         });
 
