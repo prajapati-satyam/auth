@@ -3,8 +3,8 @@ const Mailgen = require('mailgen');
 const verifyaccountMailgen = new Mailgen({
     theme: 'salted',
     product: {
-        name: 'spideys',
-        link: 'https://facebook.com'
+        name: 'AuthFlow',
+        link: 'https://auth-frontend-cyan-two.vercel.app/'
     }
 });
 
