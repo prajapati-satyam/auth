@@ -1,5 +1,5 @@
 const User = require("../model/user.model");
-const {sendverifymail, sendResetPasswordMail, sendForgotPasswordMail} = require("../utils/send_mail");
+const {sendverifymail, sendResetPasswordMail, sendForgotPasswordMail, sendChangePasswordMail} = require("../utils/send_mail");
 const { generateVerifyToken, verifyToken, generateLoginToken, generateResetPasswordToken, generateForgotPasswordToken } = require("../utils/verify_token");
 const upload = require('../middleware/file.upload.multer.middleware');
 const jwt = require('jsonwebtoken');
@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
     }
     const { firstName, lastName, username, phNum, mail, password } = req.body;
     console.log(firstName, lastName, username, phNum, mail, password);
-    
+
     if (
         firstName === undefined || firstName === null ||
         lastName === undefined || lastName === null ||
@@ -321,7 +321,8 @@ return res.status(400).json({
         }
         finduser.password = cnpassword;
         finduser.resetPasswordToken = null;
-        finduser.save();
+        await finduser.save();
+        sendChangePasswordMail(finduser.mail, finduser.username);
         res.status(200).json({
             message: "password updated done",
             success: true
@@ -416,6 +417,7 @@ if (password !== cnpassword) {
         finduser.password = password;
         finduser.forgotPasswordToken = null;
         await finduser.save();
+        sendChangePasswordMail(finduser.mail, finduser.username);
         res.status(200).json({
             message: "Password updated successfully",
             success: true

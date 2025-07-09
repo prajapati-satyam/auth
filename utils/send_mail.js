@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator } = require("./mail_template");
+const { verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator, changePasswordBodyGenrator } = require("./mail_template");
 
 
 const transporter = nodemailer.createTransport({
@@ -76,4 +76,26 @@ async function sendForgotPasswordMail(tomail, username, token) {
   }
 }
 
-module.exports = { sendverifymail, sendResetPasswordMail, sendForgotPasswordMail }
+async function sendChangePasswordMail(tomail, username) {
+  if (!username || !tomail) {
+return new Error("username and tomail is required");
+  }
+  let emailBody = verifyaccountMailgen.generate(changePasswordBodyGenrator(username));
+  let emailText = verifyaccountMailgen.generatePlaintext(changePasswordBodyGenrator(username));
+  try {
+    const info = await transporter.sendMail({
+      from: "otpverify1979@gmail.com",
+      to: tomail,
+      subject: "Password change",
+      text: emailText,
+      html: emailBody
+    });
+    return true;
+  }
+  catch (err) {
+    console.log("unable send change password mail : ", err);
+    return false
+  }
+}
+
+module.exports = { sendverifymail, sendResetPasswordMail, sendForgotPasswordMail , sendChangePasswordMail}

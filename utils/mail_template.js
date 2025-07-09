@@ -1,3 +1,4 @@
+const { text } = require('express');
 const Mailgen = require('mailgen');
 
 const verifyaccountMailgen = new Mailgen({
@@ -33,7 +34,7 @@ const resetPasswordBodyGenrator = (username, token) => {
     return {
         body : {
 name: username,
-intro: 'Reset password request',
+intro: 'Reset password request, \n Follow the Steps to Change Your Password',
 action:{
     instructions: 'To reset your account password, please click here',
     button: {
@@ -52,7 +53,7 @@ const forgotPasswordBodyGenrator = (username, token) => {
     return {
         body : {
 name: username,
-intro: 'Forgot password request',
+intro: 'Forgot password request, \n Follow the Steps to Change Your Password',
 action:{
     instructions: 'To Forgot your account password, please click here',
     button: {
@@ -67,4 +68,25 @@ outro: `If request is not placed by you, \n you can ignore it, \ no need to worr
 }
 
 
-module.exports = {verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator}
+const changePasswordBodyGenrator = (username) => {
+    if (!username) {
+       return new Error("username is required")
+    }
+    return {
+        body: {
+name: username,
+intro: "Password Change, \n urgent attentiton",
+action: {
+    instructions: "Your Password Has been Changed, if It is Not done by you contact Admin",
+    button: {
+color: "#22BC66",
+text: "Contact Admin",
+link: 'mailto:otpverify1979@gmail.com'
+    }
+},
+outro: "If it is done by you , \n kindly ignore This mail"
+        }
+    }
+}
+
+module.exports = {verifyaccountMailgen, verifyaccoutbodyGenrator, resetPasswordBodyGenrator, forgotPasswordBodyGenrator,changePasswordBodyGenrator}
