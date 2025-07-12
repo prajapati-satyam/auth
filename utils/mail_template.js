@@ -34,7 +34,7 @@ const resetPasswordBodyGenrator = (username, token) => {
     return {
         body : {
 name: username,
-intro: 'Reset password request, \n Follow the Steps to Change Your Password',
+intro: 'Reset password request',
 action:{
     instructions: 'To reset your account password, please click here',
     button: {
@@ -53,7 +53,7 @@ const forgotPasswordBodyGenrator = (username, token) => {
     return {
         body : {
 name: username,
-intro: 'Forgot password request, \n Follow the Steps to Change Your Password',
+intro: 'Forgot password request',
 action:{
     instructions: 'To Forgot your account password, please click here',
     button: {
@@ -75,7 +75,7 @@ const changePasswordBodyGenrator = (username) => {
     return {
         body: {
 name: username,
-intro: "Password Change, \n urgent attentiton",
+intro: "Password Change",
 action: {
     instructions: "Your Password Has been Changed, if It is Not done by you contact Admin",
     button: {
